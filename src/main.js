@@ -3,58 +3,108 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import axios from 'axios';
 
-const BASE_URL = 'https://pixabay.com/api/';
-
+axios.defaults.baseURL = 'https://pixabay.com/api';
 const API_KEY = '41936299-e1d4d29e6aed15564c1848147';
-
+const hidden = 'is-hidden';
+const simpleGallery = new SimpleLightbox('.gallery-item a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 const refs = {
   form: document.querySelector('.form'),
   input: document.querySelector('.search-input'),
   button: document.querySelector('.search-btn'),
   loader: document.querySelector('.loader'),
   gallery: document.querySelector('.gallery'),
+  loadMoreBtn: document.querySelector('.load-more-btn'),
 };
-let simpleGallery;
 
-refs.form.addEventListener(`submit`, e => {
+let query = '';
+let page = 1;
+let maxPage = 0;
+
+refs.form.addEventListener(`submit`, onSearch);
+
+async function onSearch(e) {
   e.preventDefault();
-  const query = refs.input.value.trim();
+  refs.gallery.innerHTML = '';
+  page = 1;
+  refs.loadMoreBtn.classList.add(hidden);
+  query = refs.input.value.trim();
+
   if (!query) {
     createMessage('Please, enter search term!');
     return;
   }
-  showLoader(true);
-  refs.form.reset();
 
-  const url = `${BASE_URL}?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true`;
-
-  fetchApiPhotos(url)
-    .then(data => {
-      if (data.hits.length === 0) {
-        createMessage(
-          `Sorry, there are no images matching your search query. Please, try again!`
-        );
-        return;
-      }
-      simpleGallery = new SimpleLightbox('.gallery-item a', {
-        captionsData: 'alt',
-        captionDelay: 250,
-      });
-      simpleGallery.refresh();
-      refs.gallery.innerHTML = createMarkup(data.hits);
-    })
-    .catch(error => console.error(error))
-    .finally(() => showLoader(false));
-});
-
-function fetchApiPhotos(url) {
-  return fetch(url).then(response => {
-    if (!response.ok) {
-      throw new Error(response.statusText);
+  try {
+    const { hits, totalHits } = await getImages(query);
+    maxPage = Math.ceil(totalHits / 40);
+    createMarkup(hits);
+    simpleGallery.refresh();
+    refs.form.reset();
+    if (hits.length > 0) {
+      refs.loadMoreBtn.classList.remove(hidden);
+      refs.loadMoreBtn.addEventListener('click', onLoadMoreBtn);
+    } else {
+      refs.loadMoreBtn.classList.add(hidden);
+      createMessage(
+        `Sorry, there are no images matching your search query. Please, try again!`
+      );
     }
-    return response.json();
+    showLoader(false);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    refs.form.reset();
+    if (page === maxPage) {
+      refs.loadMoreBtn.classList.add(hiddenClass);
+      createMessage(
+        "We're sorry, but you've reached the end of search results!"
+      );
+    }
+  }
+}
+
+async function onLoadMoreBtn() {
+  page += 1;
+  try {
+    showLoader(true);
+    refs.loadMoreBtn.classList.add(hidden);
+    const { hits } = await getImages(query, page);
+    createMarkup(hits);
+    simpleGallery.refresh();
+    showLoader(false);
+    scrollDown();
+    refs.loadMoreBtn.classList.remove(hidden);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    if (page === maxPage) {
+      refs.loadMoreBtn.classList.add(hidden);
+      createMessage(
+        "We're sorry, but you've reached the end of search results!"
+      );
+    }
+  }
+}
+
+async function getImages(query, page = 1) {
+  showLoader(true);
+  const data = await axios.get('/', {
+    params: {
+      key: API_KEY,
+      q: query,
+      image_type: 'photo',
+      orientation: 'horizontal',
+      safesearch: true,
+      per_page: 40,
+      page,
+    },
   });
+  return data.data;
 }
 
 function createMarkup(hits) {
@@ -101,6 +151,13 @@ function createMessage(message) {
     close: false,
     closeOnClick: true,
   });
+}
+function scrollDown() {
+  const galleryLink = document.querySelector('.gallery-link');
+  if (galleryLink) {
+    const rect = galleryLink.getBoundingClientRect();
+    window.scrollBy({ top: rect.height * 2, left: 0, behavior: 'smooth' });
+  }
 }
 
 function showLoader(state = true) {

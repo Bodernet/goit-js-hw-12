@@ -169,6 +169,28 @@ button:disabled {
   color: #524e4e;
 }
 
+.load-more-btn {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  width: 125px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #bea69e;
+  border: none;
+  padding: 0;
+}
+
+.load-more-btn:hover,
+.load-more-btn:focus {
+  background-color: red;
+}
+
+.load-more-btn.is-hidden {
+  display: none;
+}
+
 /* loader */
 
 .loader {
