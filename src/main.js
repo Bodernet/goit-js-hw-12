@@ -104,6 +104,7 @@ async function getImages(query, page = 1) {
       page,
     },
   });
+
   return data.data;
 }
 
