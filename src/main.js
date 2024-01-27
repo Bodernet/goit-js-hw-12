@@ -3,15 +3,18 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://pixabay.com/api';
 const API_KEY = '41936299-e1d4d29e6aed15564c1848147';
 const hidden = 'is-hidden';
+
 const simpleGallery = new SimpleLightbox('.gallery-item a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
+
 const refs = {
   form: document.querySelector('.form'),
   input: document.querySelector('.search-input'),
@@ -44,7 +47,7 @@ async function onSearch(e) {
     maxPage = Math.ceil(totalHits / 40);
     createMarkup(hits);
     simpleGallery.refresh();
-    refs.form.reset();
+    // refs.form.reset();
     if (hits.length > 0) {
       refs.loadMoreBtn.classList.remove(hidden);
       refs.loadMoreBtn.addEventListener('click', onLoadMoreBtn);
@@ -60,7 +63,7 @@ async function onSearch(e) {
   } finally {
     refs.form.reset();
     if (page === maxPage) {
-      refs.loadMoreBtn.classList.add(hiddenClass);
+      refs.loadMoreBtn.classList.add(hidden);
       createMessage(
         "We're sorry, but you've reached the end of search results!"
       );
@@ -109,7 +112,7 @@ async function getImages(query, page = 1) {
 }
 
 function createMarkup(hits) {
-  return hits
+  const markup = hits
     .map(
       ({
         webformatURL,
@@ -137,6 +140,7 @@ function createMarkup(hits) {
   </li>`
     )
     .join('');
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
 
 function createMessage(message) {

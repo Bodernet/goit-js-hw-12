@@ -4,7 +4,6 @@
   | default @import url()
   |============================
 */
-
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -20,7 +19,6 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-
 h1,
 h2,
 h3,
@@ -30,26 +28,21 @@ h6,
 p {
   margin: 0;
 }
-
 p:last-child {
   margin-bottom: 0;
 }
-
 ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-
 a {
   color: currentColor;
   text-decoration: none;
 }
-
 button {
   cursor: pointer;
 }
-
 img {
   display: block;
   max-width: 100%;
@@ -65,7 +58,6 @@ img {
   margin: 0 auto;
   margin-bottom: 32px;
 }
-
 input {
   font-family: inherit;
   padding: 8px 16px;
@@ -78,22 +70,18 @@ input {
   outline: none;
   margin-right: 8px;
 }
-
 input:hover {
   border: 1px solid #000;
 }
-
 input:active,
 input:focus {
   color: #000;
   border: 1px solid #4e75ff;
 }
-
 input:disabled {
   color: #808080;
   background: #f5f5f5;
 }
-
 button {
   color: #fff;
   font-family: inherit;
@@ -108,11 +96,9 @@ button {
   outline: none;
   cursor: pointer;
 }
-
 button:hover {
   background: #6c8cff;
 }
-
 button:disabled {
   color: #989898;
   background: #cfcfcf;
@@ -131,45 +117,40 @@ button:disabled {
   margin-bottom: 40px;
   max-width: 1128px;
 }
-
 .gallery-item {
-  flex-basis: calc((100% - 48 px) / 3);
+  flex-basis: calc((100% - 48px) / 3);
   list-style-type: none;
   transition: transform 250ms ease-in-out;
   background-color: #fafafa;
   box-shadow: 0px 2px 1px rgba(46, 47, 66, 0.08),
     0px 1px 1px rgba(46, 47, 66, 0.16), 0px 1px 6px rgba(46, 47, 66, 0.08);
 }
-
 .gallery-list:hover {
   transform: scale(1.1);
 }
-
 .gallery-img {
   width: 360px;
   height: 200px;
 }
-
 .gallery-inf {
   font-size: 15px;
   letter-spacing: 0.02em;
   width: 360px;
   text-align: center;
 }
-
 .img-stat {
   font-weight: 500;
   font-weight: bold;
   color: palevioletred;
   text-decoration: underline;
 }
-
 .gallery-inf {
   font-weight: bold;
   color: #524e4e;
 }
-
 .load-more-btn {
+  margin: 0 auto;
+  display: block;
   color: #fff;
   font-size: 16px;
   font-weight: 500;
@@ -177,16 +158,15 @@ button:disabled {
   width: 125px;
   height: 40px;
   border-radius: 8px;
-  background-color: #bea69e;
+  background-color: #4e75ff;
   border: none;
   padding: 0;
 }
-
 .load-more-btn:hover,
 .load-more-btn:focus {
-  background-color: red;
+  background-color: blue;
+  color: yellow;
 }
-
 .load-more-btn.is-hidden {
   display: none;
 }
@@ -206,7 +186,7 @@ button:disabled {
   content: '';
   width: 40%;
   height: 100%;
-  background: #ff3d00;
+  background: green;
   position: absolute;
   top: 0;
   left: 0;
