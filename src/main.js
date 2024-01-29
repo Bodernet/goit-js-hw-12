@@ -42,6 +42,11 @@ async function onSearch(e) {
     return;
   }
 
+  if (!API_KEY.trim()) {
+    createMessage('API key is missing or invalid.');
+    return;
+  }
+
   try {
     const { hits, totalHits } = await getImages(query);
     maxPage = Math.ceil(totalHits / 40);
@@ -50,6 +55,7 @@ async function onSearch(e) {
     // refs.form.reset();
     if (hits.length > 0) {
       refs.loadMoreBtn.classList.remove(hidden);
+      refs.loadMoreBtn.removeEventListener('click', onLoadMoreBtn);
       refs.loadMoreBtn.addEventListener('click', onLoadMoreBtn);
     } else {
       refs.loadMoreBtn.classList.add(hidden);
@@ -60,6 +66,7 @@ async function onSearch(e) {
     showLoader(false);
   } catch (error) {
     console.log(error);
+    createMessage('An error occurred. Please try again later.');
   } finally {
     refs.form.reset();
     if (page === maxPage) {
@@ -84,6 +91,7 @@ async function onLoadMoreBtn() {
     refs.loadMoreBtn.classList.remove(hidden);
   } catch (error) {
     console.log(error);
+    createMessage('An error occurred. Please try again later.');
   } finally {
     if (page === maxPage) {
       refs.loadMoreBtn.classList.add(hidden);
