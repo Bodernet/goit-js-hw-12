@@ -48,14 +48,14 @@ async function onSearch(e) {
   }
 
   try {
+    showLoader(true);
     const { hits, totalHits } = await getImages(query);
     maxPage = Math.ceil(totalHits / 40);
     createMarkup(hits);
     simpleGallery.refresh();
-    // refs.form.reset();
+    refs.loadMoreBtn.removeEventListener('click', onLoadMoreBtn);
     if (hits.length > 0) {
       refs.loadMoreBtn.classList.remove(hidden);
-      refs.loadMoreBtn.removeEventListener('click', onLoadMoreBtn);
       refs.loadMoreBtn.addEventListener('click', onLoadMoreBtn);
     } else {
       refs.loadMoreBtn.classList.add(hidden);
@@ -63,12 +63,12 @@ async function onSearch(e) {
         `Sorry, there are no images matching your search query. Please, try again!`
       );
     }
-    showLoader(false);
+    refs.form.reset();
   } catch (error) {
     console.log(error);
     createMessage('An error occurred. Please try again later.');
   } finally {
-    refs.form.reset();
+    showLoader(false);
     if (page === maxPage) {
       refs.loadMoreBtn.classList.add(hidden);
       createMessage(
@@ -79,6 +79,10 @@ async function onSearch(e) {
 }
 
 async function onLoadMoreBtn() {
+  if (page > maxPage) {
+    refs.loadMoreBtn.classList.add(hidden);
+    return;
+  }
   page += 1;
   try {
     showLoader(true);
